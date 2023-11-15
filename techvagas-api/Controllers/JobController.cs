@@ -20,7 +20,8 @@ namespace techvagas_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CreateNewJobRequest request)
         {
-            return Ok(await mediator.Send(request));
+            mediator.Send(request);
+            return Ok();
         }
     }
 }

@@ -1,6 +1,8 @@
 using Application.Interfaces;
 using Infra.Data;
 using Infra.Data.Repositories;
+using Infra.Elasticsearch;
+using Infra.Elasticsearch.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,10 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddTransient<DataContext>();
 builder.Services.AddTransient<IJobRepository, JobRepository>();
+
+//elasticsearch config
+builder.Services.AddElasticSearch(builder.Configuration);
+builder.Services.AddTransient<IJobIndexService, JobIndexService>();
 
 var app = builder.Build();
 

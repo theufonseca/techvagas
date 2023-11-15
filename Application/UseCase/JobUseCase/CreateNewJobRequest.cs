@@ -15,10 +15,12 @@ namespace Application.UseCase.JobUseCase
     public class CreateNewJobHandler : IRequestHandler<CreateNewJobRequest, CreateNewJobResponse>
     {
         private readonly IJobRepository jobRepository;
+        private readonly IJobIndexService jobIndexService;
 
-        public CreateNewJobHandler(IJobRepository jobRepository)
+        public CreateNewJobHandler(IJobRepository jobRepository, IJobIndexService jobIndexService)
         {
             this.jobRepository = jobRepository;
+            this.jobIndexService = jobIndexService;
         }
 
         public async Task<CreateNewJobResponse> Handle(CreateNewJobRequest request, CancellationToken cancellationToken)
@@ -30,8 +32,10 @@ namespace Application.UseCase.JobUseCase
                 Keyword = request.Keyword
             };
 
-            var id = await jobRepository.save(job);
-            return new CreateNewJobResponse(id);
+            jobRepository.save(job);
+            jobIndexService.IndexJobAsync(job);
+
+            return new CreateNewJobResponse(0);
         }
     }
 }
